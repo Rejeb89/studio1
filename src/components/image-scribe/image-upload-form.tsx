@@ -26,7 +26,7 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
       <CardHeader className="text-center">
         <div className="flex items-center justify-center gap-2">
           <ScanText className="h-8 w-8 text-primary" />
-          <CardTitle className="text-3xl font-bold tracking-tight">BenSalah Lens</CardTitle>
+          <CardTitle className="text-3xl font-bold tracking-tight">BenSalah</CardTitle>
         </div>
         <CardDescription>Upload an image to automatically extract text.</CardDescription>
       </CardHeader>

@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'BenSalah Lens',
+  title: 'BenSalah',
   description: 'Extract and format text from images effortlessly.',
 };
 
