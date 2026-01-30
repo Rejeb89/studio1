@@ -24,7 +24,7 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
   return (
     <Card className="w-full max-w-lg mx-auto shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold tracking-tight">ImageScribe</CardTitle>
+        <CardTitle className="text-3xl font-bold tracking-tight">BenSalah Lens</CardTitle>
         <CardDescription>Upload an image to automatically extract text.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
