@@ -1,11 +1,9 @@
 'use server';
 
-import { formatExtractedText } from '@/ai/flows/format-extracted-text';
 import { extractTextFromImage } from '@/ai/flows/extract-text-from-image';
 
 export async function processImage(formData: FormData): Promise<{
   extractedText: string;
-  formattedText: string;
 }> {
   const file = formData.get('image') as File | null;
   const url = formData.get('url') as string | null;
@@ -49,15 +47,8 @@ export async function processImage(formData: FormData): Promise<{
   const extractedText = extractedTextResult.extractedText;
 
   if (!extractedText.trim()) {
-    return { extractedText: 'No text found in the image.', formattedText: 'No text to format.' };
+    return { extractedText: 'No text found in the image.' };
   }
-
-  try {
-    const { formattedText } = await formatExtractedText({ extractedText });
-    return { extractedText, formattedText };
-  } catch(error) {
-    console.error('Error formatting text with AI:', error);
-    // Fallback if formatting fails
-    return { extractedText, formattedText: extractedText };
-  }
+  
+  return { extractedText };
 }

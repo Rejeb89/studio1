@@ -9,7 +9,6 @@ import { Terminal } from 'lucide-react';
 
 export default function Home() {
   const [extractedText, setExtractedText] = useState<string | undefined>();
-  const [formattedText, setFormattedText] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +21,6 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
     setExtractedText(undefined);
-    setFormattedText(undefined);
 
     const formData = new FormData();
     if (data.file) {
@@ -34,7 +32,6 @@ export default function Home() {
     try {
       const result = await processImage(formData);
       setExtractedText(result.extractedText);
-      setFormattedText(result.formattedText);
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
       setError(errorMessage);
@@ -59,7 +56,6 @@ export default function Home() {
 
         <TextDisplay 
           extractedText={extractedText}
-          formattedText={formattedText}
           isLoading={isLoading} 
         />
       </div>
