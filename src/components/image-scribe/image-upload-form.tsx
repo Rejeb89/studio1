@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, UploadCloud } from 'lucide-react';
+import { Loader2, ScanText, UploadCloud } from 'lucide-react';
 
 interface ImageUploadFormProps {
   onSubmit: (data: { file?: File }) => void;
@@ -24,7 +24,10 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
   return (
     <Card className="w-full max-w-lg mx-auto shadow-lg">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold tracking-tight">BenSalah Lens</CardTitle>
+        <div className="flex items-center justify-center gap-2">
+          <ScanText className="h-8 w-8 text-primary" />
+          <CardTitle className="text-3xl font-bold tracking-tight">BenSalah Lens</CardTitle>
+        </div>
         <CardDescription>Upload an image to automatically extract text.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
