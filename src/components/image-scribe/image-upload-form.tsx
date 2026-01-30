@@ -8,27 +8,28 @@ import { Label } from '@/components/ui/label';
 import { Loader2, ScanLine, UploadCloud } from 'lucide-react';
 
 interface ImageUploadFormProps {
-  onSubmit: (url: string) => void;
+  onSubmit: (data: { file?: File; url?: string }) => void;
   isLoading: boolean;
 }
 
 export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
-  const [imageUrl, setImageUrl] = useState('');
+  const [url, setUrl] = useState('');
+  const [file, setFile] = useState<File>();
   const [fileName, setFileName] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
-      setFileName(file.name);
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+      setUrl(''); // Clear URL input
     }
   };
 
   const handleSubmit = () => {
-    // In a real app, we'd pass `imageUrl` or file data. For this simulation,
-    // the presence of a URL or file name is enough to trigger the flow.
-    onSubmit(imageUrl || fileName);
+    if (file || url) {
+      onSubmit({ file, url: url || undefined });
+    }
   };
 
   return (
@@ -48,7 +49,7 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
               <p className="mb-2 text-sm text-muted-foreground">
                 <span className="font-semibold">Click to upload</span> or drag and drop
               </p>
-              <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP (Simulated)</p>
+              <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP</p>
               {fileName && <p className="text-xs text-primary mt-2">{fileName}</p>}
             </div>
             <Input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp" disabled={isLoading} />
@@ -70,9 +71,10 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
             id="image-url"
             type="url"
             placeholder="https://example.com/image.jpg"
-            value={imageUrl}
+            value={url}
             onChange={(e) => {
-                setImageUrl(e.target.value);
+                setUrl(e.target.value);
+                setFile(undefined);
                 setFileName('');
             }}
             disabled={isLoading}
@@ -80,13 +82,13 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSubmit} disabled={isLoading} className="w-full text-base py-6">
+        <Button onClick={handleSubmit} disabled={isLoading || (!file && !url)} className="w-full text-base py-6">
           {isLoading ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
           ) : (
             <ScanLine className="mr-2 h-5 w-5" />
           )}
-          {isLoading ? 'Extracting...' : 'Extract Text'}
+          {isLoading ? 'Processing...' : 'Extract Text'}
         </Button>
       </CardFooter>
     </Card>

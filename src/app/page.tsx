@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getFormattedText } from '@/app/actions';
+import { processImage } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ImageUploadForm } from '@/components/image-scribe/image-upload-form';
 import { TextDisplay } from '@/components/image-scribe/text-display';
@@ -13,8 +13,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleExtractText = async (imageUrl: string) => {
-    if (!imageUrl) {
+  const handleProcessImage = async (data: { file?: File; url?: string }) => {
+    if (!data.file && !data.url) {
         setError("Please provide an image file or URL to proceed.");
         return;
     }
@@ -24,18 +24,20 @@ export default function Home() {
     setExtractedText(undefined);
     setFormattedText(undefined);
 
-    // Simulate a delay for OCR processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // This is where a real OCR would happen. We'll use placeholder text for demonstration.
-    const simulatedExtractedText = `This is an exampel of text extraacted from an image. It has severel speling misteaks and lacks proper fomatting. We will see if the AI can cleen it up. also, all of this is in one single block with no paragraphs. another sentance with bad grammer. the quick brown fox jumps over the lazy dog.`;
-    setExtractedText(simulatedExtractedText);
+    const formData = new FormData();
+    if (data.file) {
+      formData.append('image', data.file);
+    } else if (data.url) {
+      formData.append('url', data.url);
+    }
 
     try {
-      const result = await getFormattedText(simulatedExtractedText);
+      const result = await processImage(formData);
+      setExtractedText(result.extractedText);
       setFormattedText(result.formattedText);
     } catch (e) {
-      setError('An error occurred while formatting the text. Please try again.');
+      const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+      setError(errorMessage);
       console.error(e);
     } finally {
       setIsLoading(false);
@@ -45,7 +47,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-6 md:p-8">
       <div className="w-full max-w-5xl space-y-8 py-8">
-        <ImageUploadForm onSubmit={handleExtractText} isLoading={isLoading} />
+        <ImageUploadForm onSubmit={handleProcessImage} isLoading={isLoading} />
         
         {error && (
             <Alert variant="destructive" className="max-w-lg mx-auto">
