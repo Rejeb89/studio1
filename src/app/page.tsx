@@ -12,9 +12,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleProcessImage = async (data: { file?: File; url?: string }) => {
-    if (!data.file && !data.url) {
-        setError("Please provide an image file or URL to proceed.");
+  const handleProcessImage = async (data: { file?: File }) => {
+    if (!data.file) {
+        setError("Please provide an image file to proceed.");
         return;
     }
     
@@ -25,8 +25,6 @@ export default function Home() {
     const formData = new FormData();
     if (data.file) {
       formData.append('image', data.file);
-    } else if (data.url) {
-      formData.append('url', data.url);
     }
 
     try {

@@ -4,16 +4,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Loader2, ScanLine, UploadCloud } from 'lucide-react';
 
 interface ImageUploadFormProps {
-  onSubmit: (data: { file?: File; url?: string }) => void;
+  onSubmit: (data: { file?: File }) => void;
   isLoading: boolean;
 }
 
 export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
-  const [url, setUrl] = useState('');
   const [file, setFile] = useState<File>();
   const [fileName, setFileName] = useState('');
 
@@ -22,13 +20,12 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
       setFileName(selectedFile.name);
-      setUrl(''); // Clear URL input
     }
   };
 
   const handleSubmit = () => {
-    if (file || url) {
-      onSubmit({ file, url: url || undefined });
+    if (file) {
+      onSubmit({ file });
     }
   };
 
@@ -55,34 +52,9 @@ export function ImageUploadForm({ onSubmit, isLoading }: ImageUploadFormProps) {
             <Input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp" disabled={isLoading} />
           </label>
         </div>
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or paste URL</span>
-          </div>
-        </div>
-        <div>
-          <Label htmlFor="image-url" className="sr-only">
-            Image URL
-          </Label>
-          <Input
-            id="image-url"
-            type="url"
-            placeholder="https://example.com/image.jpg"
-            value={url}
-            onChange={(e) => {
-                setUrl(e.target.value);
-                setFile(undefined);
-                setFileName('');
-            }}
-            disabled={isLoading}
-          />
-        </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSubmit} disabled={isLoading || (!file && !url)} className="w-full text-base py-6">
+        <Button onClick={handleSubmit} disabled={isLoading || !file} className="w-full text-base py-6">
           {isLoading ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
           ) : (
