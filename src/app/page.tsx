@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { processImage } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ImageUploadForm } from '@/components/image-scribe/image-upload-form';
@@ -11,6 +11,29 @@ export default function Home() {
   const [extractedText, setExtractedText] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (extractedText && !isLoading) {
+      if (extractedText === 'No text found in the image.') return;
+
+      const header =
+        "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+        "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+        "xmlns='http://www.w3.org/TR/REC-html40'>" +
+        "<head><meta charset='utf-8'><title>Extracted Text</title></head><body>";
+      const footer = '</body></html>';
+      const content = `<pre>${extractedText}</pre>`;
+      const sourceHTML = header + content + footer;
+
+      const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+      const fileDownload = document.createElement('a');
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = 'extracted-text.doc';
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
+    }
+  }, [extractedText, isLoading]);
 
   const handleProcessImage = async (data: { file?: File }) => {
     if (!data.file) {
